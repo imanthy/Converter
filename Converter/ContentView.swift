@@ -7,40 +7,24 @@
 
 import SwiftUI
 
-enum LengthUnit: String {
-    case feet = "Feet"
-    case meters = "Meters"
-    case kilometers = "Kilometers"
-    case miles = "Miles"
-    case yards = "Yards"
-}
-
 struct ContentView: View {
     
     @State private var input_value = 0.0
-    @State private var input_unit: LengthUnit = .meters
-    @State private var output_unit: LengthUnit = .kilometers
+    @State private var input_unit = UnitLength.meters
+    @State private var output_unit = UnitLength.kilometers
     @FocusState private var inputIsFocused: Bool
-    let unit_selection: [LengthUnit] = [.feet, .meters, .kilometers, .miles, .yards]
-    var output_value: Double {
-        let inputToMetersMultiplier: Double
-        let metersToOutputMultiplier: Double
-        
-        switch input_unit {
-        case .feet:         inputToMetersMultiplier = 0.3048
-        case .kilometers:   inputToMetersMultiplier = 1000
-        case .miles:        inputToMetersMultiplier = 1609.34
-        case .yards:        inputToMetersMultiplier = 0.9144
-        default:            inputToMetersMultiplier = 1.0
-        }
-        switch output_unit {
-        case .feet:         metersToOutputMultiplier = 3.28084
-        case .kilometers:   metersToOutputMultiplier = 0.001
-        case .miles:        metersToOutputMultiplier = 0.000621371
-        case .yards:        metersToOutputMultiplier = 1.09361
-        default:            metersToOutputMultiplier = 1.0
-        }
-        return (input_value * inputToMetersMultiplier * metersToOutputMultiplier)
+    
+    let unit_selection: [UnitLength] = [.feet, .meters, .kilometers, .miles, .yards]
+    let formatter: MeasurementFormatter
+    init() {
+        formatter = MeasurementFormatter()
+        formatter.unitOptions = .providedUnit
+        formatter.unitStyle = .long
+    }
+    var output: String {
+        let input_measurement = Measurement(value: input_value, unit: input_unit)
+        let output_measurement = input_measurement.converted(to: output_unit)
+        return formatter.string(from: output_measurement)
     }
     
     var body: some View {
@@ -56,18 +40,18 @@ struct ContentView: View {
                 
                 Picker("Convert from", selection: $input_unit) {
                     ForEach(unit_selection, id: \.self) {
-                        Text($0.rawValue)
+                        Text(formatter.string(from: $0).capitalized)
                     }
                 }
                 
                 Picker("Convert to", selection: $output_unit) {
                     ForEach(unit_selection, id: \.self) {
-                        Text($0.rawValue)
+                        Text(formatter.string(from: $0).capitalized)
                     }
                 }
                 
                 Section {
-                    Text("\(output_value.formatted()) \(output_unit.rawValue)")
+                    Text(output)
                 } header: {
                     Text("Result")
                 }
@@ -81,7 +65,6 @@ struct ContentView: View {
                     }
                 }
             }
-
         }
     }
 }
