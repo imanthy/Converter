@@ -21,7 +21,7 @@ struct ContentView: View {
     
     let conversions: [Conversions] = [.Distance, .Volume, .Temperature, .Time]
     let unit_types = [
-        Conversions.Distance    : [UnitLength.meters, UnitLength.kilometers, UnitLength.miles, UnitLength.inches, UnitLength.feet],
+        Conversions.Distance    : [UnitLength.centimeters, UnitLength.meters, UnitLength.kilometers, UnitLength.miles, UnitLength.inches, UnitLength.feet],
         Conversions.Volume      : [UnitMass.grams, UnitMass.kilograms, UnitMass.ounces, UnitMass.pounds],
         Conversions.Temperature : [UnitTemperature.celsius, UnitTemperature.fahrenheit, UnitTemperature.kelvin],
         Conversions.Time        : [UnitDuration.hours, UnitDuration.minutes, UnitDuration.seconds, UnitDuration.milliseconds, UnitDuration.microseconds]
